@@ -36,61 +36,34 @@ class MainFrame(tkinter.Frame):
 		self.combo_games = self.create_combo(self, self.on_combo_games_changed, 1, 1)
 		self.create_label(self, "Suffixe: ", 1, 2)
 		self.entry_name_suffix = self.create_entry(self, "", True, 1, 3)
-		self.create_label(self, "Status: ", 2, 0)
-		self.entry_status = self.create_entry(self, "", False, 2, 1)
-		self.create_label(self, "Suffixe: ", 2, 2)
-		self.entry_status_suffix = self.create_entry(self, "", True, 2, 3)
-		self.create_label(self, "Clé fournie par: ", 3, 0)
-		self.entry_key_provider = self.create_entry(self, "", False, 3, 1)
-		self.create_label(self, "Suffixe: ", 3, 2)
-		self.entry_key_provider_suffix = self.create_entry(self, "", True, 3, 3)
-		self.create_label(self, "Genre: ", 4, 0)
-		self.entry_genre = self.create_entry(self, "", False, 4, 1)
-		self.create_label(self, "Suffixe: ", 4, 2)
-		self.entry_genre_suffix = self.create_entry(self, "", True, 4, 3)
-		self.create_label(self, "Développeur: ", 5, 0)
-		self.entry_developer = self.create_entry(self, "", False, 5, 1)
-		self.create_label(self, "Suffixe: ", 5, 2)
-		self.entry_developer_suffix = self.create_entry(self, "", True, 5, 3)
-		self.create_label(self, "Editeur: ", 6, 0)
-		self.entry_publisher = self.create_entry(self, "", False, 6, 1)
-		self.create_label(self, "Suffixe: ", 6, 2)
-		self.entry_publisher_suffix = self.create_entry(self, "", True, 6, 3)
-		self.create_label(self, "Twitter: ", 7, 0)
-		self.entry_twitter = self.create_entry(self, "", False, 7, 1)
-		self.create_label(self, "Suffixe: ", 7, 2)
-		self.entry_twitter_suffix = self.create_entry(self, "", True, 7, 3)
-		self.create_label(self, "Pays: ", 8, 0)
-		self.entry_country = self.create_entry(self, "", False, 8, 1)
-		self.create_label(self, "Suffixe: ", 8, 2)
-		self.entry_country_suffix = self.create_entry(self, "", True, 8, 3)
-		self.create_label(self, "Année: ", 9, 0)
-		self.entry_year = self.create_entry(self, "", False, 9, 1)
-		self.create_label(self, "Suffixe: ", 9, 2)
-		self.entry_year_suffix = self.create_entry(self, "", True, 9, 3)
-		self.create_label(self, "Plateformes: ", 10, 0)
-		self.entry_platforms = self.create_entry(self, "", False, 10, 1)
-		self.create_label(self, "Suffixe: ", 10, 2)
-		self.entry_platforms_suffix = self.create_entry(self, "", True, 10, 3)
-		self.create_label(self, "Prix: ", 11, 0)
-		self.entry_price = self.create_entry(self, "", False, 11, 1)
-		self.create_label(self, "Suffixe: ", 11, 2)
-		self.entry_price_suffix = self.create_entry(self, "", True, 11, 3)
-		self.create_label(self, "Durée de vie: ", 12, 0)
-		self.entry_length = self.create_entry(self, "", False, 12, 1)
-		self.create_label(self, "Suffixe: ", 12, 2)
-		self.entry_length_suffix = self.create_entry(self, "", True, 12, 3)
-		self.create_label(self, "Langue: ", 13, 0)
-		self.entry_language = self.create_entry(self, "", False, 13, 1)
-		self.create_label(self, "Suffixe: ", 13, 2)
-		self.entry_language_suffix = self.create_entry(self, "", True, 13, 3)
-		self.create_label(self, "Divers: ", 14, 0)
-		self.entry_misc = self.create_entry(self, "", False, 14, 1)
-		self.create_label(self, "Suffixe: ", 14, 2)
-		self.entry_misc_suffix = self.create_entry(self, "", True, 14, 3)
+		self.create_label(self, "Fichier texte: ", 1, 4)
+		self.entry_name_text_file = self.create_entry(self, "name.txt", True, 1, 5)
 		
-		self.create_button(self, "Recharger Gdoc", self.on_reload_sheet_click, 15, 0, 4)
-		self.create_button(self, "Envoyer vers les fichiers textes", self.on_send_to_text_click, 16, 0, 4)
+		self.entry_status, self.entry_status_suffix, self.entry_status_text_file = self.create_line_controls(2, "Status: ", "status.txt")
+		self.entry_key_provider, self.entry_key_provider_suffix, self.entry_key_provider_text_file = self.create_line_controls(3, "Clé fournie par: ", "key-provider.txt")
+		self.entry_genre, self.entry_genre_suffix, self.entry_genre_text_file = self.create_line_controls(4, "Genre: ", "genre.txt")
+		self.entry_developer, self.entry_developer_suffix, self.entry_developer_text_file = self.create_line_controls(5, "Développeur: ", "developer.txt")
+		self.entry_publisher, self.entry_publisher_suffix, self.entry_publisher_text_file = self.create_line_controls(6, "Editeur: ", "publisher.txt")
+		self.entry_twitter, self.entry_twitter_suffix, self.entry_twitter_text_file = self.create_line_controls(7, "Twitter: ", "twitter.txt")
+		self.entry_country, self.entry_country_suffix, self.entry_country_text_file = self.create_line_controls(8, "Pays: ", "country.txt")
+		self.entry_year, self.entry_year_suffix, self.entry_year_text_file = self.create_line_controls(9, "Année: ", "year.txt")
+		self.entry_platforms, self.entry_platforms_suffix, self.entry_platforms_text_file = self.create_line_controls(10, "Plateformes: ", "platforms.txt")
+		self.entry_price, self.entry_price_suffix, self.entry_price_text_file = self.create_line_controls(11, "Prix: ", "price.txt")
+		self.entry_length, self.entry_length_suffix, self.entry_length_text_file = self.create_line_controls(12, "Durée de vie: ", "length.txt")
+		self.entry_language, self.entry_language_suffix, self.entry_language_text_file = self.create_line_controls(13, "Langue: ", "language.txt")
+		self.entry_misc, self.entry_misc_suffix, self.entry_misc_text_file = self.create_line_controls(14, "Divers: ", "misc.txt")
+		
+		self.create_button(self, "Recharger Gdoc", self.on_reload_sheet_click, 15, 0, 6)
+		self.create_button(self, "Envoyer vers les fichiers textes", self.on_send_to_text_click, 16, 0, 6)
+		
+	def create_line_controls(self, line, label, text_file_name):
+		self.create_label(self, label, line, 0)
+		entry = self.create_entry(self, "", False, line, 1)
+		self.create_label(self, "Suffixe: ", line, 2)
+		suffix = self.create_entry(self, "", True, line, 3)
+		self.create_label(self, "Fichier texte: ", line, 4)
+		text_file = self.create_entry(self, text_file_name, True, line, 5)
+		return entry, suffix, text_file
 		
 	def create_label(self, frame, text, row, column):
 		label = tkinter.Label(frame, text = text, anchor = tkinter.W)
@@ -109,6 +82,7 @@ class MainFrame(tkinter.Frame):
 		else:
 			entry = tkinter.Entry(frame, state="readonly")
 		entry.grid(sticky=tkinter.W, padx=2, pady=2, row=row, column=column)
+		self.set_entry_text(entry, text)
 		return entry
 		
 	def create_button(self, frame, text, on_click_cb, row, column, columnspan):
@@ -150,21 +124,32 @@ class MainFrame(tkinter.Frame):
 	def on_reload_sheet_click(self):
 		self.reload_sheet()
 		
+	def append_text_to_list(self, l, text, suffix):
+		if text != "":
+			l.append(text + suffix)
+		return l
+		
 	def on_send_to_text_click(self):
-		self.utils.write_file("w", "text-files/name.txt", self.combo_games.cget("values")[self.combo_games.current()] + self.entry_name_suffix.get())
-		self.utils.write_file("w", "text-files/status.txt", self.entry_status.get() + self.entry_status_suffix.get())
-		self.utils.write_file("w", "text-files/key-provider.txt", self.entry_key_provider.get() + self.entry_key_provider_suffix.get())
-		self.utils.write_file("w", "text-files/genre.txt", self.entry_genre.get() + self.entry_genre_suffix.get())
-		self.utils.write_file("w", "text-files/developer.txt", self.entry_developer.get() + self.entry_developer_suffix.get())
-		self.utils.write_file("w", "text-files/publisher.txt", self.entry_publisher.get() + self.entry_publisher_suffix.get())
-		self.utils.write_file("w", "text-files/twitter.txt", self.entry_twitter.get() + self.entry_twitter_suffix.get())
-		self.utils.write_file("w", "text-files/country.txt", self.entry_country.get() + self.entry_country_suffix.get())
-		self.utils.write_file("w", "text-files/year.txt", self.entry_year.get() + self.entry_year_suffix.get())
-		self.utils.write_file("w", "text-files/platforms.txt", self.entry_platforms.get() + self.entry_platforms_suffix.get())
-		self.utils.write_file("w", "text-files/price.txt", self.entry_price.get() + self.entry_price_suffix.get())
-		self.utils.write_file("w", "text-files/length.txt", self.entry_length.get() + self.entry_length_suffix.get())
-		self.utils.write_file("w", "text-files/language.txt", self.entry_language.get() + self.entry_language_suffix.get())
-		self.utils.write_file("w", "text-files/misc.txt", self.entry_misc.get() + self.entry_misc_suffix.get())
+		text_file_to_text = {}
+		
+		text_file_to_text[self.entry_name_text_file.get()] = self.append_text_to_list(text_file_to_text.get(self.entry_name_text_file.get(), []), self.combo_games.cget("values")[self.combo_games.current()], self.entry_name_suffix.get())
+		text_file_to_text[self.entry_status_text_file.get()] = self.append_text_to_list(text_file_to_text.get(self.entry_status_text_file.get(), []), self.entry_status.get(), self.entry_status_suffix.get())
+		text_file_to_text[self.entry_key_provider_text_file.get()] = self.append_text_to_list(text_file_to_text.get(self.entry_key_provider_text_file.get(), []), self.entry_key_provider.get(), self.entry_key_provider_suffix.get())
+		text_file_to_text[self.entry_genre_text_file.get()] = self.append_text_to_list(text_file_to_text.get(self.entry_genre_text_file.get(), []), self.entry_genre.get(), self.entry_genre_suffix.get())
+		text_file_to_text[self.entry_developer_text_file.get()] = self.append_text_to_list(text_file_to_text.get(self.entry_developer_text_file.get(), []), self.entry_developer.get(), self.entry_developer_suffix.get())
+		text_file_to_text[self.entry_publisher_text_file.get()] = self.append_text_to_list(text_file_to_text.get(self.entry_publisher_text_file.get(), []), self.entry_publisher.get(), self.entry_publisher_suffix.get())
+		text_file_to_text[self.entry_twitter_text_file.get()] = self.append_text_to_list(text_file_to_text.get(self.entry_twitter_text_file.get(), []), self.entry_twitter.get(), self.entry_twitter_suffix.get())
+		text_file_to_text[self.entry_country_text_file.get()] = self.append_text_to_list(text_file_to_text.get(self.entry_country_text_file.get(), []), self.entry_country.get(), self.entry_country_suffix.get())
+		text_file_to_text[self.entry_year_text_file.get()] = self.append_text_to_list(text_file_to_text.get(self.entry_year_text_file.get(), []), self.entry_year.get(), self.entry_year_suffix.get())
+		text_file_to_text[self.entry_platforms_text_file.get()] = self.append_text_to_list(text_file_to_text.get(self.entry_platforms_text_file.get(), []), self.entry_platforms.get(), self.entry_platforms_suffix.get())
+		text_file_to_text[self.entry_price_text_file.get()] = self.append_text_to_list(text_file_to_text.get(self.entry_price_text_file.get(), []), self.entry_price.get(), self.entry_price_suffix.get())
+		text_file_to_text[self.entry_length_text_file.get()] = self.append_text_to_list(text_file_to_text.get(self.entry_length_text_file.get(), []), self.entry_length.get(), self.entry_length_suffix.get())
+		text_file_to_text[self.entry_language_text_file.get()] = self.append_text_to_list(text_file_to_text.get(self.entry_language_text_file.get(), []), self.entry_language.get(), self.entry_language_suffix.get())
+		text_file_to_text[self.entry_misc_text_file.get()] = self.append_text_to_list(text_file_to_text.get(self.entry_misc_text_file.get(), []), self.entry_misc.get(), self.entry_misc_suffix.get())
+		
+		for k, v in text_file_to_text.items():
+			if k != "":
+				self.utils.write_file("w", "text-files/" + k, "".join(v))
 		
 	def on_combo_seasons_changed(self, event):
 		self.process_on_combo_seasons_changed(None)
@@ -443,45 +428,73 @@ class MainFrame(tkinter.Frame):
 				
 			if "name_suffix" in config["CONTEXT"]:
 				self.set_entry_text(self.entry_name_suffix, config["CONTEXT"]["name_suffix"].replace("<SPACE>", " "))
+			if "name_text_file" in config["CONTEXT"]:
+				self.set_entry_text(self.entry_name_text_file, config["CONTEXT"]["name_text_file"].replace("<SPACE>", " "))
 				
 			if "status_suffix" in config["CONTEXT"]:
 				self.set_entry_text(self.entry_status_suffix, config["CONTEXT"]["status_suffix"].replace("<SPACE>", " "))
+			if "status_text_file" in config["CONTEXT"]:
+				self.set_entry_text(self.entry_status_text_file, config["CONTEXT"]["status_text_file"].replace("<SPACE>", " "))
 				
 			if "key_provider_suffix" in config["CONTEXT"]:
 				self.set_entry_text(self.entry_key_provider_suffix, config["CONTEXT"]["key_provider_suffix"].replace("<SPACE>", " "))
+			if "key_provider_text_file" in config["CONTEXT"]:
+				self.set_entry_text(self.entry_key_provider_text_file, config["CONTEXT"]["key_provider_text_file"].replace("<SPACE>", " "))
 				
 			if "genre_suffix" in config["CONTEXT"]:
 				self.set_entry_text(self.entry_genre_suffix, config["CONTEXT"]["genre_suffix"].replace("<SPACE>", " "))
+			if "genre_text_file" in config["CONTEXT"]:
+				self.set_entry_text(self.entry_genre_text_file, config["CONTEXT"]["genre_text_file"].replace("<SPACE>", " "))
 				
 			if "developer_suffix" in config["CONTEXT"]:
 				self.set_entry_text(self.entry_developer_suffix, config["CONTEXT"]["developer_suffix"].replace("<SPACE>", " "))
+			if "developer_text_file" in config["CONTEXT"]:
+				self.set_entry_text(self.entry_developer_text_file, config["CONTEXT"]["developer_text_file"].replace("<SPACE>", " "))
 				
 			if "publisher_suffix" in config["CONTEXT"]:
 				self.set_entry_text(self.entry_publisher_suffix, config["CONTEXT"]["publisher_suffix"].replace("<SPACE>", " "))
+			if "publisher_text_file" in config["CONTEXT"]:
+				self.set_entry_text(self.entry_publisher_text_file, config["CONTEXT"]["publisher_text_file"].replace("<SPACE>", " "))
 				
 			if "twitter_suffix" in config["CONTEXT"]:
 				self.set_entry_text(self.entry_twitter_suffix, config["CONTEXT"]["twitter_suffix"].replace("<SPACE>", " "))
+			if "twitter_text_file" in config["CONTEXT"]:
+				self.set_entry_text(self.entry_twitter_text_file, config["CONTEXT"]["twitter_text_file"].replace("<SPACE>", " "))
 				
 			if "country_suffix" in config["CONTEXT"]:
 				self.set_entry_text(self.entry_country_suffix, config["CONTEXT"]["country_suffix"].replace("<SPACE>", " "))
+			if "country_text_file" in config["CONTEXT"]:
+				self.set_entry_text(self.entry_country_text_file, config["CONTEXT"]["country_text_file"].replace("<SPACE>", " "))
 				
 			if "year_suffix" in config["CONTEXT"]:
 				self.set_entry_text(self.entry_year_suffix, config["CONTEXT"]["year_suffix"].replace("<SPACE>", " "))
+			if "year_text_file" in config["CONTEXT"]:
+				self.set_entry_text(self.entry_year_text_file, config["CONTEXT"]["year_text_file"].replace("<SPACE>", " "))
 				
 			if "platforms_suffix" in config["CONTEXT"]:
 				self.set_entry_text(self.entry_platforms_suffix, config["CONTEXT"]["platforms_suffix"].replace("<SPACE>", " "))
+			if "platforms_text_file" in config["CONTEXT"]:
+				self.set_entry_text(self.entry_platforms_text_file, config["CONTEXT"]["platforms_text_file"].replace("<SPACE>", " "))
 				
 			if "price_suffix" in config["CONTEXT"]:
 				self.set_entry_text(self.entry_price_suffix, config["CONTEXT"]["price_suffix"].replace("<SPACE>", " "))
+			if "price_text_file" in config["CONTEXT"]:
+				self.set_entry_text(self.entry_price_text_file, config["CONTEXT"]["price_text_file"].replace("<SPACE>", " "))
 				
 			if "length_suffix" in config["CONTEXT"]:
 				self.set_entry_text(self.entry_length_suffix, config["CONTEXT"]["length_suffix"].replace("<SPACE>", " "))
+			if "length_text_file" in config["CONTEXT"]:
+				self.set_entry_text(self.entry_length_text_file, config["CONTEXT"]["length_text_file"].replace("<SPACE>", " "))
 				
 			if "language_suffix" in config["CONTEXT"]:
 				self.set_entry_text(self.entry_language_suffix, config["CONTEXT"]["language_suffix"].replace("<SPACE>", " "))
+			if "language_text_file" in config["CONTEXT"]:
+				self.set_entry_text(self.entry_language_text_file, config["CONTEXT"]["language_text_file"].replace("<SPACE>", " "))
 				
 			if "misc_suffix" in config["CONTEXT"]:
 				self.set_entry_text(self.entry_misc_suffix, config["CONTEXT"]["misc_suffix"].replace("<SPACE>", " "))
+			if "misc_text_file" in config["CONTEXT"]:
+				self.set_entry_text(self.entry_misc_text_file, config["CONTEXT"]["misc_text_file"].replace("<SPACE>", " "))
 				
 		return init_values
 		
@@ -492,19 +505,33 @@ class MainFrame(tkinter.Frame):
 			"season": self.model["current_season"].replace(" ", "<SPACE>"),
 			"game": self.model["current_game"].replace(" ", "<SPACE>"),
 			"name_suffix": self.entry_name_suffix.get().replace(" ", "<SPACE>"),
+			"name_text_file": self.entry_name_text_file.get().replace(" ", "<SPACE>"),
 			"status_suffix": self.entry_status_suffix.get().replace(" ", "<SPACE>"),
+			"status_text_file": self.entry_status_text_file.get().replace(" ", "<SPACE>"),
 			"key_provider_suffix": self.entry_key_provider_suffix.get().replace(" ", "<SPACE>"),
+			"key_provider_text_file": self.entry_key_provider_text_file.get().replace(" ", "<SPACE>"),
 			"genre_suffix": self.entry_genre_suffix.get().replace(" ", "<SPACE>"),
+			"genre_text_file": self.entry_genre_text_file.get().replace(" ", "<SPACE>"),
 			"developer_suffix": self.entry_developer_suffix.get().replace(" ", "<SPACE>"),
+			"developer_text_file": self.entry_developer_text_file.get().replace(" ", "<SPACE>"),
 			"publisher_suffix": self.entry_publisher_suffix.get().replace(" ", "<SPACE>"),
+			"publisher_text_file": self.entry_publisher_text_file.get().replace(" ", "<SPACE>"),
 			"twitter_suffix": self.entry_twitter_suffix.get().replace(" ", "<SPACE>"),
+			"twitter_text_file": self.entry_twitter_text_file.get().replace(" ", "<SPACE>"),
 			"country_suffix": self.entry_country_suffix.get().replace(" ", "<SPACE>"),
+			"country_text_file": self.entry_country_text_file.get().replace(" ", "<SPACE>"),
 			"year_suffix": self.entry_year_suffix.get().replace(" ", "<SPACE>"),
+			"year_text_file": self.entry_year_text_file.get().replace(" ", "<SPACE>"),
 			"platforms_suffix": self.entry_platforms_suffix.get().replace(" ", "<SPACE>"),
+			"platforms_text_file": self.entry_platforms_text_file.get().replace(" ", "<SPACE>"),
 			"price_suffix": self.entry_price_suffix.get().replace(" ", "<SPACE>"),
+			"price_text_file": self.entry_price_text_file.get().replace(" ", "<SPACE>"),
 			"length_suffix": self.entry_length_suffix.get().replace(" ", "<SPACE>"),
+			"length_text_file": self.entry_length_text_file.get().replace(" ", "<SPACE>"),
 			"language_suffix": self.entry_language_suffix.get().replace(" ", "<SPACE>"),
+			"language_text_file": self.entry_language_text_file.get().replace(" ", "<SPACE>"),
 			"misc_suffix": self.entry_misc_suffix.get().replace(" ", "<SPACE>"),
+			"misc_text_file": self.entry_misc_text_file.get().replace(" ", "<SPACE>"),
 		}
 		
 		with open(file_name, "w") as f:
