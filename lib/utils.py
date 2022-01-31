@@ -41,7 +41,7 @@ class Utils():
 		while nb_retries < 5:
 			try:
 				with open(file_name, mode) as f:
-					f.write(value)
+					f.write(value.encode("utf-8"))
 				break
 			except:
 				nb_retries += 1

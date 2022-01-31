@@ -149,7 +149,7 @@ class MainFrame(tkinter.Frame):
 		
 		for k, v in text_file_to_text.items():
 			if k != "":
-				self.utils.write_file("w", "text-files/" + k, "".join(v))
+				self.utils.write_file("wb", "text-files/" + k, "".join(v))
 		
 	def on_combo_seasons_changed(self, event):
 		self.process_on_combo_seasons_changed(None)
