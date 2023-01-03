@@ -11,20 +11,68 @@ import tkinter.messagebox
 import lib.sheets_client
 import lib.utils
 import time
+import asyncio
+import threading
+
+from twitchio.ext import commands
+from twitchio.ext import routines
+
+
+class Bot(commands.Bot):
+
+	def __init__(self, config):
+		# Initialise our Bot with our access token, prefix and a list of channels to join on boot...
+		super().__init__(token=config["TWITCH"]["ACCESS_TOKEN"], prefix='?', initial_channels=[config["TWITCH"]["CHANNEL"]])
+		self.config = config
+
+	async def event_ready(self):
+		# We are logged in and ready to chat and use commands...
+		print(f'Logged in as | {self.nick}')
+		print(f'User id is | {self.user_id}')
+
+	'''
+	@commands.command()
+	async def hello(self, ctx: commands.Context):
+		# Send a hello back!
+		await ctx.send(f'Hello {ctx.author.name}!')
+	'''
+		
+	async def repeat_message_loop(self, message, period_in_seconds):
+		while True:
+			await self.get_channel(self.config["TWITCH"]["CHANNEL"]).send(message)
+			await asyncio.sleep(period_in_seconds)
+			
+	def start_repeat_message_task(self, message, period_in_seconds):
+		return self.loop.create_task(self.repeat_message_loop(message, period_in_seconds))
+		
+	def stop_repeat_message_task(self, task):
+		task.cancel()
+		
+class BotThread(threading.Thread):
+	def __init__(self, config):
+		threading.Thread.__init__(self)
+		self.daemon = True
+		self.bot = Bot(config)
+
+	def run(self):
+		self.bot.run()
+		
+	def get_bot(self):
+		return self.bot
 
 
 class MainFrame(tkinter.Frame):
 	TOKENS_FILENAME = "tokens.ini"
 	
-	def __init__(self, window, **kwargs):
+	def __init__(self, config, bot, window, **kwargs):
 		tkinter.Frame.__init__(self, window, **kwargs)
 		
 		self.window = window
 		
 		self.model = None
 		
-		self.config = configparser.ConfigParser()
-		self.config.read("config.ini")
+		self.bot = bot
+		self.config = config
 		
 		self.utils = lib.utils.Utils()
 		
@@ -40,7 +88,7 @@ class MainFrame(tkinter.Frame):
 		self.entry_name_text_file = self.create_entry(self, "name.txt", True, 1, 5)
 		
 		self.entry_status, self.entry_status_suffix, self.entry_status_text_file = self.create_line_controls(2, "Status: ", "status.txt")
-		self.entry_key_provider, self.entry_key_provider_suffix, self.entry_key_provider_text_file = self.create_line_controls(3, "Clé fournie par: ", "key-provider.txt")
+		self.entry_tested_version, self.entry_tested_version_suffix, self.entry_tested_version_text_file = self.create_line_controls(3, "Version testée: ", "tested-version.txt")
 		self.entry_genre, self.entry_genre_suffix, self.entry_genre_text_file = self.create_line_controls(4, "Genre: ", "genre.txt")
 		self.entry_developer, self.entry_developer_suffix, self.entry_developer_text_file = self.create_line_controls(5, "Développeur: ", "developer.txt")
 		self.entry_publisher, self.entry_publisher_suffix, self.entry_publisher_text_file = self.create_line_controls(6, "Editeur: ", "publisher.txt")
@@ -52,9 +100,11 @@ class MainFrame(tkinter.Frame):
 		self.entry_length, self.entry_length_suffix, self.entry_length_text_file = self.create_line_controls(12, "Durée de vie: ", "length.txt")
 		self.entry_language, self.entry_language_suffix, self.entry_language_text_file = self.create_line_controls(13, "Langue: ", "language.txt")
 		self.entry_misc, self.entry_misc_suffix, self.entry_misc_text_file = self.create_line_controls(14, "Divers: ", "misc.txt")
+		self.entry_affiliate_link, self.entry_affiliate_link_suffix, self.entry_affiliate_link_text_file = self.create_line_controls(15, "Lien d'affiliation: ", "affiliate-link.txt")
+		self.entry_affiliate_link_bot_button, self.entry_affiliate_link_bot_prefix_text, self.entry_affiliate_link_bot_period_text = self.add_bot_line_controls(15, self.on_bot_affiliate_link_click)
 		
-		self.create_button(self, "Recharger Gdoc", self.on_reload_sheet_click, 15, 0, 6)
-		self.create_button(self, "Envoyer vers les fichiers textes", self.on_send_to_text_click, 16, 0, 6)
+		self.create_button(self, "Recharger Gdoc", self.on_reload_sheet_click, 16, 0, 11)
+		self.create_button(self, "Envoyer vers les fichiers textes", self.on_send_to_text_click, 17, 0, 11)
 		
 	def create_line_controls(self, line, label, text_file_name):
 		self.create_label(self, label, line, 0)
@@ -65,6 +115,31 @@ class MainFrame(tkinter.Frame):
 		text_file = self.create_entry(self, text_file_name, True, line, 5)
 		return entry, suffix, text_file
 		
+	def add_bot_line_controls(self, line, on_click_cb):
+		button = self.create_button(self, "Start repeat in chat", on_click_cb, line, 6, 1)
+		self.create_label(self, "Préfixe: ", line, 7)
+		prefix_text = self.create_entry(self, "", True, line, 8)
+		self.create_label(self, "Période (sec): ", line, 9)
+		period_text = self.create_entry(self, "300", True, line, 10)
+		return button, prefix_text, period_text
+		
+	def on_bot_affiliate_link_click(self):
+		if not hasattr(self, "bot_affiliate_link_task") or self.bot_affiliate_link_task is None:
+			period_text = self.entry_affiliate_link_bot_period_text.get()
+			bot_text = self.entry_affiliate_link_bot_prefix_text.get() + self.entry_affiliate_link.get()
+			if period_text != "" and bot_text != "":
+				period = int(self.entry_affiliate_link_bot_period_text.get())
+				self.bot_affiliate_link_task = self.bot.start_repeat_message_task(bot_text, period)
+				self.entry_affiliate_link_bot_button.config(text="Stop repeat in chat")
+		else:
+			self.stop_bot_affiliate_link()
+			
+	def stop_bot_affiliate_link(self):
+		if hasattr(self, "bot_affiliate_link_task") and self.bot_affiliate_link_task is not None:
+			self.bot.stop_repeat_message_task(self.bot_affiliate_link_task)
+			self.bot_affiliate_link_task = None
+			self.entry_affiliate_link_bot_button.config(text="Start repeat in chat")
+			
 	def create_label(self, frame, text, row, column):
 		label = tkinter.Label(frame, text = text, anchor = tkinter.W)
 		label.grid(sticky=tkinter.W, padx=2, pady=2, row=row, column=column)
@@ -134,7 +209,7 @@ class MainFrame(tkinter.Frame):
 		
 		text_file_to_text[self.entry_name_text_file.get()] = self.append_text_to_list(text_file_to_text.get(self.entry_name_text_file.get(), []), self.combo_games.cget("values")[self.combo_games.current()], self.entry_name_suffix.get())
 		text_file_to_text[self.entry_status_text_file.get()] = self.append_text_to_list(text_file_to_text.get(self.entry_status_text_file.get(), []), self.entry_status.get(), self.entry_status_suffix.get())
-		text_file_to_text[self.entry_key_provider_text_file.get()] = self.append_text_to_list(text_file_to_text.get(self.entry_key_provider_text_file.get(), []), self.entry_key_provider.get(), self.entry_key_provider_suffix.get())
+		text_file_to_text[self.entry_tested_version_text_file.get()] = self.append_text_to_list(text_file_to_text.get(self.entry_tested_version_text_file.get(), []), self.entry_tested_version.get(), self.entry_tested_version_suffix.get())
 		text_file_to_text[self.entry_genre_text_file.get()] = self.append_text_to_list(text_file_to_text.get(self.entry_genre_text_file.get(), []), self.entry_genre.get(), self.entry_genre_suffix.get())
 		text_file_to_text[self.entry_developer_text_file.get()] = self.append_text_to_list(text_file_to_text.get(self.entry_developer_text_file.get(), []), self.entry_developer.get(), self.entry_developer_suffix.get())
 		text_file_to_text[self.entry_publisher_text_file.get()] = self.append_text_to_list(text_file_to_text.get(self.entry_publisher_text_file.get(), []), self.entry_publisher.get(), self.entry_publisher_suffix.get())
@@ -146,6 +221,7 @@ class MainFrame(tkinter.Frame):
 		text_file_to_text[self.entry_length_text_file.get()] = self.append_text_to_list(text_file_to_text.get(self.entry_length_text_file.get(), []), self.entry_length.get(), self.entry_length_suffix.get())
 		text_file_to_text[self.entry_language_text_file.get()] = self.append_text_to_list(text_file_to_text.get(self.entry_language_text_file.get(), []), self.entry_language.get(), self.entry_language_suffix.get())
 		text_file_to_text[self.entry_misc_text_file.get()] = self.append_text_to_list(text_file_to_text.get(self.entry_misc_text_file.get(), []), self.entry_misc.get(), self.entry_misc_suffix.get())
+		text_file_to_text[self.entry_affiliate_link_text_file.get()] = self.append_text_to_list(text_file_to_text.get(self.entry_affiliate_link_text_file.get(), []), self.entry_affiliate_link.get(), self.entry_affiliate_link_suffix.get())
 		
 		for k, v in text_file_to_text.items():
 			if k != "":
@@ -204,8 +280,10 @@ class MainFrame(tkinter.Frame):
 			self.model["current_game_index"] = current_game_index
 			model_games = self.model["seasons"][self.model["current_season"]]["games"]
 			
+			self.stop_bot_affiliate_link()
+			
 			self.set_entry_text(self.entry_status, model_games[current_game_index]["status"])
-			self.set_entry_text(self.entry_key_provider, model_games[current_game_index]["key_provider"])
+			self.set_entry_text(self.entry_tested_version, model_games[current_game_index]["tested_version"])
 			self.set_entry_text(self.entry_genre, model_games[current_game_index]["genre"])
 			self.set_entry_text(self.entry_developer, model_games[current_game_index]["developer"])
 			self.set_entry_text(self.entry_publisher, model_games[current_game_index]["publisher"])
@@ -217,6 +295,7 @@ class MainFrame(tkinter.Frame):
 			self.set_entry_text(self.entry_length, model_games[current_game_index]["length"])
 			self.set_entry_text(self.entry_language, model_games[current_game_index]["language"])
 			self.set_entry_text(self.entry_misc, model_games[current_game_index]["misc"])
+			self.set_entry_text(self.entry_affiliate_link, model_games[current_game_index]["affiliate_link"])
 			
 	def build_platform_label(self, model_game):
 		l = []
@@ -272,7 +351,7 @@ class MainFrame(tkinter.Frame):
 		for season in model["seasons"]:
 			ranges.append(season + "!" + config_sheet["NAME_COLUMN"] + first_line + ":" + config_sheet["NAME_COLUMN"])
 			ranges.append(season + "!" + config_sheet["STATUS_COLUMN"] + first_line + ":" + config_sheet["STATUS_COLUMN"])
-			ranges.append(season + "!" + config_sheet["KEY_PROVIDER_COLUMN"] + first_line + ":" + config_sheet["KEY_PROVIDER_COLUMN"])
+			ranges.append(season + "!" + config_sheet["TESTED_VERSION_COLUMN"] + first_line + ":" + config_sheet["TESTED_VERSION_COLUMN"])
 			ranges.append(season + "!" + config_sheet["GENRE_COLUMN"] + first_line + ":" + config_sheet["GENRE_COLUMN"])
 			ranges.append(season + "!" + config_sheet["DEVELOPER_COLUMN"] + first_line + ":" + config_sheet["DEVELOPER_COLUMN"])
 			ranges.append(season + "!" + config_sheet["PUBLISHER_COLUMN"] + first_line + ":" + config_sheet["PUBLISHER_COLUMN"])
@@ -289,6 +368,7 @@ class MainFrame(tkinter.Frame):
 			ranges.append(season + "!" + config_sheet["LENGTH_COLUMN"] + first_line + ":" + config_sheet["LENGTH_COLUMN"])
 			ranges.append(season + "!" + config_sheet["LANGUAGE_COLUMN"] + first_line + ":" + config_sheet["LANGUAGE_COLUMN"])
 			ranges.append(season + "!" + config_sheet["MISC_COLUMN"] + first_line + ":" + config_sheet["MISC_COLUMN"])
+			ranges.append(season + "!" + config_sheet["AFFILIATE_LINK_COLUMN"] + first_line + ":" + config_sheet["AFFILIATE_LINK_COLUMN"])
 			
 		values = self.sheets_client.get_values(ranges)
 		
@@ -316,7 +396,7 @@ class MainFrame(tkinter.Frame):
 						model["seasons"][season]["games"].append({
 							"name": r["values"][0]["formattedValue"],
 							"status": "",
-							"key_provider": "",
+							"tested_version": "",
 							"genre": "",
 							"developer": "",
 							"publisher": "",
@@ -333,6 +413,7 @@ class MainFrame(tkinter.Frame):
 							"length": "",
 							"language": "",
 							"misc": "",
+							"affiliate_link": "",
 						})
 						
 				for d in data:
@@ -348,8 +429,8 @@ class MainFrame(tkinter.Frame):
 						
 					if column == self.utils.sheet_a1_value_to_column_number(config_sheet["STATUS_COLUMN"]):
 						self.set_sheet_data_simple_values_to_model(d, model["seasons"][season]["games"], game_start_row, "status")
-					elif column == self.utils.sheet_a1_value_to_column_number(config_sheet["KEY_PROVIDER_COLUMN"]):
-						self.set_sheet_data_simple_values_to_model(d, model["seasons"][season]["games"], game_start_row, "key_provider")
+					elif column == self.utils.sheet_a1_value_to_column_number(config_sheet["TESTED_VERSION_COLUMN"]):
+						self.set_sheet_data_simple_values_to_model(d, model["seasons"][season]["games"], game_start_row, "tested_version")
 					elif column == self.utils.sheet_a1_value_to_column_number(config_sheet["GENRE_COLUMN"]):
 						self.set_sheet_data_simple_values_to_model(d, model["seasons"][season]["games"], game_start_row, "genre")
 					elif column == self.utils.sheet_a1_value_to_column_number(config_sheet["DEVELOPER_COLUMN"]):
@@ -382,6 +463,8 @@ class MainFrame(tkinter.Frame):
 						self.set_sheet_data_simple_values_to_model(d, model["seasons"][season]["games"], game_start_row, "language")
 					elif column == self.utils.sheet_a1_value_to_column_number(config_sheet["MISC_COLUMN"]):
 						self.set_sheet_data_simple_values_to_model(d, model["seasons"][season]["games"], game_start_row, "misc")
+					elif column == self.utils.sheet_a1_value_to_column_number(config_sheet["AFFILIATE_LINK_COLUMN"]):
+						self.set_sheet_data_simple_values_to_model(d, model["seasons"][season]["games"], game_start_row, "affiliate_link")
 						
 		return model
 		
@@ -436,10 +519,10 @@ class MainFrame(tkinter.Frame):
 			if "status_text_file" in config["CONTEXT"]:
 				self.set_entry_text(self.entry_status_text_file, config["CONTEXT"]["status_text_file"].replace("<SPACE>", " "))
 				
-			if "key_provider_suffix" in config["CONTEXT"]:
-				self.set_entry_text(self.entry_key_provider_suffix, config["CONTEXT"]["key_provider_suffix"].replace("<SPACE>", " "))
-			if "key_provider_text_file" in config["CONTEXT"]:
-				self.set_entry_text(self.entry_key_provider_text_file, config["CONTEXT"]["key_provider_text_file"].replace("<SPACE>", " "))
+			if "tested_version_suffix" in config["CONTEXT"]:
+				self.set_entry_text(self.entry_tested_version_suffix, config["CONTEXT"]["tested_version_suffix"].replace("<SPACE>", " "))
+			if "tested_version_text_file" in config["CONTEXT"]:
+				self.set_entry_text(self.entry_tested_version_text_file, config["CONTEXT"]["tested_version_text_file"].replace("<SPACE>", " "))
 				
 			if "genre_suffix" in config["CONTEXT"]:
 				self.set_entry_text(self.entry_genre_suffix, config["CONTEXT"]["genre_suffix"].replace("<SPACE>", " "))
@@ -495,6 +578,15 @@ class MainFrame(tkinter.Frame):
 				self.set_entry_text(self.entry_misc_suffix, config["CONTEXT"]["misc_suffix"].replace("<SPACE>", " "))
 			if "misc_text_file" in config["CONTEXT"]:
 				self.set_entry_text(self.entry_misc_text_file, config["CONTEXT"]["misc_text_file"].replace("<SPACE>", " "))
+			
+			if "affiliate_link_suffix" in config["CONTEXT"]:
+				self.set_entry_text(self.entry_affiliate_link_suffix, config["CONTEXT"]["affiliate_link_suffix"].replace("<SPACE>", " "))
+			if "affiliate_link_text_file" in config["CONTEXT"]:
+				self.set_entry_text(self.entry_affiliate_link_text_file, config["CONTEXT"]["affiliate_link_text_file"].replace("<SPACE>", " "))
+			if "affiliate_link_bot_prefix" in config["CONTEXT"]:
+				self.set_entry_text(self.entry_affiliate_link_bot_prefix_text, config["CONTEXT"]["affiliate_link_bot_prefix"].replace("<SPACE>", " "))
+			if "affiliate_link_bot_period" in config["CONTEXT"]:
+				self.set_entry_text(self.entry_affiliate_link_bot_period_text, config["CONTEXT"]["affiliate_link_bot_period"].replace("<SPACE>", " "))
 				
 		return init_values
 		
@@ -508,8 +600,8 @@ class MainFrame(tkinter.Frame):
 			"name_text_file": self.entry_name_text_file.get().replace(" ", "<SPACE>"),
 			"status_suffix": self.entry_status_suffix.get().replace(" ", "<SPACE>"),
 			"status_text_file": self.entry_status_text_file.get().replace(" ", "<SPACE>"),
-			"key_provider_suffix": self.entry_key_provider_suffix.get().replace(" ", "<SPACE>"),
-			"key_provider_text_file": self.entry_key_provider_text_file.get().replace(" ", "<SPACE>"),
+			"tested_version_suffix": self.entry_tested_version_suffix.get().replace(" ", "<SPACE>"),
+			"tested_version_text_file": self.entry_tested_version_text_file.get().replace(" ", "<SPACE>"),
 			"genre_suffix": self.entry_genre_suffix.get().replace(" ", "<SPACE>"),
 			"genre_text_file": self.entry_genre_text_file.get().replace(" ", "<SPACE>"),
 			"developer_suffix": self.entry_developer_suffix.get().replace(" ", "<SPACE>"),
@@ -532,6 +624,10 @@ class MainFrame(tkinter.Frame):
 			"language_text_file": self.entry_language_text_file.get().replace(" ", "<SPACE>"),
 			"misc_suffix": self.entry_misc_suffix.get().replace(" ", "<SPACE>"),
 			"misc_text_file": self.entry_misc_text_file.get().replace(" ", "<SPACE>"),
+			"affiliate_link_suffix": self.entry_affiliate_link_suffix.get().replace(" ", "<SPACE>"),
+			"affiliate_link_text_file": self.entry_affiliate_link_text_file.get().replace(" ", "<SPACE>"),
+			"affiliate_link_bot_prefix": self.entry_affiliate_link_bot_prefix_text.get().replace(" ", "<SPACE>"),
+			"affiliate_link_bot_period": self.entry_affiliate_link_bot_period_text.get().replace(" ", "<SPACE>"),
 		}
 		
 		with open(file_name, "w") as f:
@@ -545,10 +641,16 @@ class MainFrame(tkinter.Frame):
 			pass
 			
 def main():
+	config = configparser.ConfigParser()
+	config.read("config.ini")
+	
+	bot_thread = BotThread(config)
+	bot_thread.start()
+	
 	window = tkinter.Tk()
 	window.title("IndieGameBoy")
 	window.resizable(False, False)
-	f = MainFrame(window)
+	f = MainFrame(config, bot_thread.get_bot(), window)
 	window.protocol("WM_DELETE_WINDOW", f.on_close)
 	window.after(1, f.load)
 	window.mainloop()
