@@ -6,6 +6,7 @@ import configparser
 import requests
 import tkinter
 import tkinter.ttk
+import tkinter.font
 import tkinter.filedialog
 import tkinter.messagebox
 import lib.sheets_client
@@ -69,6 +70,10 @@ class MainFrame(tkinter.Frame):
 		
 		self.window = window
 		
+		default_font = tkinter.font.nametofont("TkDefaultFont")
+		default_font.configure(size=12)
+		self.window.option_add("*Font", default_font)
+		
 		self.model = None
 		
 		self.bot = bot
@@ -84,8 +89,8 @@ class MainFrame(tkinter.Frame):
 		self.combo_games = self.create_combo(self, self.on_combo_games_changed, 1, 1)
 		self.create_label(self, "Suffixe: ", 1, 2)
 		self.entry_name_suffix = self.create_entry(self, "", True, 1, 3)
-		self.create_label(self, "Fichier texte: ", 1, 4)
-		self.entry_name_text_file = self.create_entry(self, "name.txt", True, 1, 5)
+		self.create_label(self, "Fichier texte: ", 1, 4, 2)
+		self.entry_name_text_file = self.create_entry(self, "name.txt", True, 1, 6)
 		
 		self.entry_status, self.entry_status_suffix, self.entry_status_text_file = self.create_line_controls(2, "Status: ", "status.txt")
 		self.entry_tested_version, self.entry_tested_version_suffix, self.entry_tested_version_text_file = self.create_line_controls(3, "Version testée: ", "tested-version.txt")
@@ -101,26 +106,26 @@ class MainFrame(tkinter.Frame):
 		self.entry_language, self.entry_language_suffix, self.entry_language_text_file = self.create_line_controls(13, "Langue: ", "language.txt")
 		self.entry_misc, self.entry_misc_suffix, self.entry_misc_text_file = self.create_line_controls(14, "Divers: ", "misc.txt")
 		self.entry_affiliate_link, self.entry_affiliate_link_suffix, self.entry_affiliate_link_text_file = self.create_line_controls(15, "Lien d'affiliation: ", "affiliate-link.txt")
-		self.entry_affiliate_link_bot_button, self.entry_affiliate_link_bot_prefix_text, self.entry_affiliate_link_bot_period_text = self.add_bot_line_controls(15, self.on_bot_affiliate_link_click)
+		self.entry_affiliate_link_bot_button, self.entry_affiliate_link_bot_prefix_text, self.entry_affiliate_link_bot_period_text = self.add_bot_line_controls(16, self.on_bot_affiliate_link_click)
 		
-		self.create_button(self, "Recharger Gdoc", self.on_reload_sheet_click, 16, 0, 11)
-		self.create_button(self, "Envoyer vers les fichiers textes", self.on_send_to_text_click, 17, 0, 11)
+		self.create_button(self, "Recharger Gdoc", self.on_reload_sheet_click, 17, 0, 7)
+		self.create_button(self, "Envoyer vers les fichiers textes", self.on_send_to_text_click, 18, 0, 7)
 		
 	def create_line_controls(self, line, label, text_file_name):
 		self.create_label(self, label, line, 0)
 		entry = self.create_entry(self, "", False, line, 1)
 		self.create_label(self, "Suffixe: ", line, 2)
 		suffix = self.create_entry(self, "", True, line, 3)
-		self.create_label(self, "Fichier texte: ", line, 4)
-		text_file = self.create_entry(self, text_file_name, True, line, 5)
+		self.create_label(self, "Fichier texte: ", line, 4, 2)
+		text_file = self.create_entry(self, text_file_name, True, line, 6)
 		return entry, suffix, text_file
 		
 	def add_bot_line_controls(self, line, on_click_cb):
+		self.create_label(self, "Préfixe: ", line, 2)
+		prefix_text = self.create_entry(self, "", True, line, 3)
+		self.create_label(self, "Période (sec): ", line, 4)
+		period_text = self.create_entry(self, "300", True, line, 5, 5)
 		button = self.create_button(self, "Start repeat in chat", on_click_cb, line, 6, 1)
-		self.create_label(self, "Préfixe: ", line, 7)
-		prefix_text = self.create_entry(self, "", True, line, 8)
-		self.create_label(self, "Période (sec): ", line, 9)
-		period_text = self.create_entry(self, "300", True, line, 10)
 		return button, prefix_text, period_text
 		
 	def on_bot_affiliate_link_click(self):
@@ -140,9 +145,9 @@ class MainFrame(tkinter.Frame):
 			self.bot_affiliate_link_task = None
 			self.entry_affiliate_link_bot_button.config(text="Start repeat in chat")
 			
-	def create_label(self, frame, text, row, column):
+	def create_label(self, frame, text, row, column, columnspan=1):
 		label = tkinter.Label(frame, text = text, anchor = tkinter.W)
-		label.grid(sticky=tkinter.W, padx=2, pady=2, row=row, column=column)
+		label.grid(sticky=tkinter.W, padx=2, pady=2, row=row, column=column, columnspan=columnspan)
 		return label
 		
 	def create_combo(self, frame, on_changed_cb, row, column):
@@ -151,11 +156,11 @@ class MainFrame(tkinter.Frame):
 		combo.bind("<<ComboboxSelected>>", on_changed_cb)
 		return combo
 		
-	def create_entry(self, frame, text, enabled, row, column):
+	def create_entry(self, frame, text, enabled, row, column, width=23):
 		if enabled:
-			entry = tkinter.Entry(frame)
+			entry = tkinter.Entry(frame, width=width)
 		else:
-			entry = tkinter.Entry(frame, state="readonly")
+			entry = tkinter.Entry(frame, state="readonly", width=width)
 		entry.grid(sticky=tkinter.W, padx=2, pady=2, row=row, column=column)
 		self.set_entry_text(entry, text)
 		return entry
