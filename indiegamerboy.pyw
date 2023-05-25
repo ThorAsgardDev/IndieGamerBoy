@@ -302,6 +302,8 @@ class MainFrame(tkinter.Frame):
 			self.set_entry_text(self.entry_misc, model_games[current_game_index]["misc"])
 			self.set_entry_text(self.entry_affiliate_link, model_games[current_game_index]["affiliate_link"])
 			
+			self.on_send_to_text_click()
+			
 	def build_platform_label(self, model_game):
 		l = []
 		if model_game["switch"] == "TRUE":
