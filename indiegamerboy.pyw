@@ -265,7 +265,7 @@ class MainFrame(tkinter.Frame):
 			self.set_entry_text(self.entry_country, model_game["country"])
 			self.set_entry_text(self.entry_platforms, self.build_platform_label(model_game))
 			self.set_entry_text(self.entry_price, model_game["price"])
-			self.set_entry_text(self.entry_fr_language, model_game["fr_language"])
+			self.set_entry_text(self.entry_fr_language, "Oui" if model_game["fr_language"] == "TRUE" else "Non")
 			self.set_entry_text(self.entry_length, model_game["length"])
 			self.set_entry_text(self.entry_misc, model_game["misc"])
 			self.set_entry_text(self.entry_affiliate_link, model_game["affiliate_link"])
