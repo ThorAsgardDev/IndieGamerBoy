@@ -92,19 +92,18 @@ class MainFrame(tkinter.Frame):
 		
 		self.entry_status, self.entry_status_suffix, self.entry_status_text_file = self.create_line_controls(1, "Status: ", "status.txt")
 		self.entry_tested_version, self.entry_tested_version_suffix, self.entry_tested_version_text_file = self.create_line_controls(2, "Version testée: ", "tested-version.txt")
-		self.entry_genre, self.entry_genre_suffix, self.entry_genre_text_file = self.create_line_controls(3, "Genre: ", "genre.txt")
-		self.entry_developer, self.entry_developer_suffix, self.entry_developer_text_file = self.create_line_controls(4, "Développeur: ", "developer.txt")
-		self.entry_publisher, self.entry_publisher_suffix, self.entry_publisher_text_file = self.create_line_controls(5, "Editeur: ", "publisher.txt")
-		self.entry_twitter, self.entry_twitter_suffix, self.entry_twitter_text_file = self.create_line_controls(6, "Twitter: ", "twitter.txt")
+		self.entry_release_date, self.entry_release_date_suffix, self.entry_release_date_text_file = self.create_line_controls(3, "Date de sortie: ", "release-date.txt")
+		self.entry_genre, self.entry_genre_suffix, self.entry_genre_text_file = self.create_line_controls(4, "Genre: ", "genre.txt")
+		self.entry_developer, self.entry_developer_suffix, self.entry_developer_text_file = self.create_line_controls(5, "Développeur: ", "developer.txt")
+		self.entry_publisher, self.entry_publisher_suffix, self.entry_publisher_text_file = self.create_line_controls(6, "Editeur: ", "publisher.txt")
 		self.entry_country, self.entry_country_suffix, self.entry_country_text_file = self.create_line_controls(7, "Pays: ", "country.txt")
-		self.entry_year, self.entry_year_suffix, self.entry_year_text_file = self.create_line_controls(8, "Année: ", "year.txt")
-		self.entry_platforms, self.entry_platforms_suffix, self.entry_platforms_text_file = self.create_line_controls(9, "Plateformes: ", "platforms.txt")
-		self.entry_price, self.entry_price_suffix, self.entry_price_text_file = self.create_line_controls(10, "Prix: ", "price.txt")
+		self.entry_platforms, self.entry_platforms_suffix, self.entry_platforms_text_file = self.create_line_controls(8, "Plateformes: ", "platforms.txt")
+		self.entry_price, self.entry_price_suffix, self.entry_price_text_file = self.create_line_controls(9, "Prix: ", "price.txt")
+		self.entry_fr_language, self.entry_fr_language_suffix, self.entry_fr_language_text_file = self.create_line_controls(10, "Langue fr: ", "fr-language.txt")
 		self.entry_length, self.entry_length_suffix, self.entry_length_text_file = self.create_line_controls(11, "Durée de vie: ", "length.txt")
-		self.entry_language, self.entry_language_suffix, self.entry_language_text_file = self.create_line_controls(12, "Langue: ", "language.txt")
-		self.entry_misc, self.entry_misc_suffix, self.entry_misc_text_file = self.create_line_controls(13, "Divers: ", "misc.txt")
-		self.entry_affiliate_link, self.entry_affiliate_link_suffix, self.entry_affiliate_link_text_file = self.create_line_controls(14, "Lien d'affiliation: ", "affiliate-link.txt")
-		self.entry_affiliate_link_bot_button, self.entry_affiliate_link_bot_prefix_text, self.entry_affiliate_link_bot_period_text = self.add_bot_line_controls(15, self.on_bot_affiliate_link_click)
+		self.entry_misc, self.entry_misc_suffix, self.entry_misc_text_file = self.create_line_controls(12, "Divers: ", "misc.txt")
+		self.entry_affiliate_link, self.entry_affiliate_link_suffix, self.entry_affiliate_link_text_file = self.create_line_controls(13, "Lien d'affiliation: ", "affiliate-link.txt")
+		self.entry_affiliate_link_bot_button, self.entry_affiliate_link_bot_prefix_text, self.entry_affiliate_link_bot_period_text = self.add_bot_line_controls(14, self.on_bot_affiliate_link_click)
 		
 		self.create_button(self, "Recharger Gdoc", self.on_reload_sheet_click, 16, 0, 7)
 		self.create_button(self, "Envoyer vers les fichiers textes", self.on_send_to_text_click, 17, 0, 7)
@@ -213,16 +212,15 @@ class MainFrame(tkinter.Frame):
 		text_file_to_text[self.entry_name_text_file.get()] = self.append_text_to_list(text_file_to_text.get(self.entry_name_text_file.get(), []), self.combo_games.cget("values")[self.combo_games.current()], self.entry_name_suffix.get())
 		text_file_to_text[self.entry_status_text_file.get()] = self.append_text_to_list(text_file_to_text.get(self.entry_status_text_file.get(), []), self.entry_status.get(), self.entry_status_suffix.get())
 		text_file_to_text[self.entry_tested_version_text_file.get()] = self.append_text_to_list(text_file_to_text.get(self.entry_tested_version_text_file.get(), []), self.entry_tested_version.get(), self.entry_tested_version_suffix.get())
+		text_file_to_text[self.entry_release_date_text_file.get()] = self.append_text_to_list(text_file_to_text.get(self.entry_release_date_text_file.get(), []), self.entry_release_date.get(), self.entry_release_date_suffix.get())
 		text_file_to_text[self.entry_genre_text_file.get()] = self.append_text_to_list(text_file_to_text.get(self.entry_genre_text_file.get(), []), self.entry_genre.get(), self.entry_genre_suffix.get())
 		text_file_to_text[self.entry_developer_text_file.get()] = self.append_text_to_list(text_file_to_text.get(self.entry_developer_text_file.get(), []), self.entry_developer.get(), self.entry_developer_suffix.get())
 		text_file_to_text[self.entry_publisher_text_file.get()] = self.append_text_to_list(text_file_to_text.get(self.entry_publisher_text_file.get(), []), self.entry_publisher.get(), self.entry_publisher_suffix.get())
-		text_file_to_text[self.entry_twitter_text_file.get()] = self.append_text_to_list(text_file_to_text.get(self.entry_twitter_text_file.get(), []), self.entry_twitter.get(), self.entry_twitter_suffix.get())
 		text_file_to_text[self.entry_country_text_file.get()] = self.append_text_to_list(text_file_to_text.get(self.entry_country_text_file.get(), []), self.entry_country.get(), self.entry_country_suffix.get())
-		text_file_to_text[self.entry_year_text_file.get()] = self.append_text_to_list(text_file_to_text.get(self.entry_year_text_file.get(), []), self.entry_year.get(), self.entry_year_suffix.get())
 		text_file_to_text[self.entry_platforms_text_file.get()] = self.append_text_to_list(text_file_to_text.get(self.entry_platforms_text_file.get(), []), self.entry_platforms.get(), self.entry_platforms_suffix.get())
 		text_file_to_text[self.entry_price_text_file.get()] = self.append_text_to_list(text_file_to_text.get(self.entry_price_text_file.get(), []), self.entry_price.get(), self.entry_price_suffix.get())
+		text_file_to_text[self.entry_fr_language_text_file.get()] = self.append_text_to_list(text_file_to_text.get(self.entry_fr_language_text_file.get(), []), self.entry_fr_language.get(), self.entry_fr_language_suffix.get())
 		text_file_to_text[self.entry_length_text_file.get()] = self.append_text_to_list(text_file_to_text.get(self.entry_length_text_file.get(), []), self.entry_length.get(), self.entry_length_suffix.get())
-		text_file_to_text[self.entry_language_text_file.get()] = self.append_text_to_list(text_file_to_text.get(self.entry_language_text_file.get(), []), self.entry_language.get(), self.entry_language_suffix.get())
 		text_file_to_text[self.entry_misc_text_file.get()] = self.append_text_to_list(text_file_to_text.get(self.entry_misc_text_file.get(), []), self.entry_misc.get(), self.entry_misc_suffix.get())
 		text_file_to_text[self.entry_affiliate_link_text_file.get()] = self.append_text_to_list(text_file_to_text.get(self.entry_affiliate_link_text_file.get(), []), self.entry_affiliate_link.get(), self.entry_affiliate_link_suffix.get())
 		
@@ -260,16 +258,15 @@ class MainFrame(tkinter.Frame):
 			
 			self.set_entry_text(self.entry_status, model_game["status"])
 			self.set_entry_text(self.entry_tested_version, model_game["tested_version"])
+			self.set_entry_text(self.entry_release_date, model_game["release_date"])
 			self.set_entry_text(self.entry_genre, model_game["genre"])
 			self.set_entry_text(self.entry_developer, model_game["developer"])
 			self.set_entry_text(self.entry_publisher, model_game["publisher"])
-			self.set_entry_text(self.entry_twitter, model_game["twitter"])
 			self.set_entry_text(self.entry_country, model_game["country"])
-			self.set_entry_text(self.entry_year, model_game["year"])
 			self.set_entry_text(self.entry_platforms, self.build_platform_label(model_game))
 			self.set_entry_text(self.entry_price, model_game["price"])
+			self.set_entry_text(self.entry_fr_language, model_game["fr_language"])
 			self.set_entry_text(self.entry_length, model_game["length"])
-			self.set_entry_text(self.entry_language, model_game["language"])
 			self.set_entry_text(self.entry_misc, model_game["misc"])
 			self.set_entry_text(self.entry_affiliate_link, model_game["affiliate_link"])
 			
@@ -277,16 +274,12 @@ class MainFrame(tkinter.Frame):
 			
 	def build_platform_label(self, model_game):
 		l = []
-		if model_game["switch"] == "TRUE":
-			l.append("Switch")
-		if model_game["ps4"] == "TRUE":
-			l.append("PS4")
-		if model_game["ps5"] == "TRUE":
-			l.append("PS5")
-		if model_game["xbox_one"] == "TRUE":
-			l.append("Xbox One")
-		if model_game["xbox_series"] == "TRUE":
-			l.append("Xbox Series")
+		if model_game["nintendo"] == "TRUE":
+			l.append("Nintendo")
+		if model_game["playstation"] == "TRUE":
+			l.append("Playstation")
+		if model_game["xbox"] == "TRUE":
+			l.append("Xbox")
 		if model_game["pc"] == "TRUE":
 			l.append("PC")
 		return "/".join(l)
@@ -311,7 +304,7 @@ class MainFrame(tkinter.Frame):
 		
 		config_sheet = self.config["SHEET"]
 		
-		response = self.sheets_client.get_sheets()
+		# response = self.sheets_client.get_sheets()
 		
 		first_line = config_sheet["FIRST_GAME_LINE"]
 		
@@ -322,23 +315,20 @@ class MainFrame(tkinter.Frame):
 		ranges.append(worksheet_name + "!" + config_sheet["NAME_COLUMN"] + first_line + ":" + config_sheet["NAME_COLUMN"])
 		ranges.append(worksheet_name + "!" + config_sheet["STATUS_COLUMN"] + first_line + ":" + config_sheet["STATUS_COLUMN"])
 		ranges.append(worksheet_name + "!" + config_sheet["TESTED_VERSION_COLUMN"] + first_line + ":" + config_sheet["TESTED_VERSION_COLUMN"])
+		ranges.append(worksheet_name + "!" + config_sheet["AFFILIATE_LINK_COLUMN"] + first_line + ":" + config_sheet["AFFILIATE_LINK_COLUMN"])
+		ranges.append(worksheet_name + "!" + config_sheet["RELEASE_DATE_COLUMN"] + first_line + ":" + config_sheet["RELEASE_DATE_COLUMN"])
 		ranges.append(worksheet_name + "!" + config_sheet["GENRE_COLUMN"] + first_line + ":" + config_sheet["GENRE_COLUMN"])
 		ranges.append(worksheet_name + "!" + config_sheet["DEVELOPER_COLUMN"] + first_line + ":" + config_sheet["DEVELOPER_COLUMN"])
 		ranges.append(worksheet_name + "!" + config_sheet["PUBLISHER_COLUMN"] + first_line + ":" + config_sheet["PUBLISHER_COLUMN"])
-		ranges.append(worksheet_name + "!" + config_sheet["TWITTER_COLUMN"] + first_line + ":" + config_sheet["TWITTER_COLUMN"])
 		ranges.append(worksheet_name + "!" + config_sheet["COUNTRY_COLUMN"] + first_line + ":" + config_sheet["COUNTRY_COLUMN"])
-		ranges.append(worksheet_name + "!" + config_sheet["YEAR_COLUMN"] + first_line + ":" + config_sheet["YEAR_COLUMN"])
-		ranges.append(worksheet_name + "!" + config_sheet["SWITCH_COLUMN"] + first_line + ":" + config_sheet["SWITCH_COLUMN"])
-		ranges.append(worksheet_name + "!" + config_sheet["PS4_COLUMN"] + first_line + ":" + config_sheet["PS4_COLUMN"])
-		ranges.append(worksheet_name + "!" + config_sheet["PS5_COLUMN"] + first_line + ":" + config_sheet["PS5_COLUMN"])
-		ranges.append(worksheet_name + "!" + config_sheet["XBOX_ONE_COLUMN"] + first_line + ":" + config_sheet["XBOX_ONE_COLUMN"])
-		ranges.append(worksheet_name + "!" + config_sheet["XBOX_SERIES_COLUMN"] + first_line + ":" + config_sheet["XBOX_SERIES_COLUMN"])
+		ranges.append(worksheet_name + "!" + config_sheet["NINTENDO_COLUMN"] + first_line + ":" + config_sheet["NINTENDO_COLUMN"])
+		ranges.append(worksheet_name + "!" + config_sheet["PLAYSTATION_COLUMN"] + first_line + ":" + config_sheet["PLAYSTATION_COLUMN"])
+		ranges.append(worksheet_name + "!" + config_sheet["XBOX_COLUMN"] + first_line + ":" + config_sheet["XBOX_COLUMN"])
 		ranges.append(worksheet_name + "!" + config_sheet["PC_COLUMN"] + first_line + ":" + config_sheet["PC_COLUMN"])
 		ranges.append(worksheet_name + "!" + config_sheet["PRICE_COLUMN"] + first_line + ":" + config_sheet["PRICE_COLUMN"])
+		ranges.append(worksheet_name + "!" + config_sheet["FR_LANGUAGE_COLUMN"] + first_line + ":" + config_sheet["FR_LANGUAGE_COLUMN"])
 		ranges.append(worksheet_name + "!" + config_sheet["LENGTH_COLUMN"] + first_line + ":" + config_sheet["LENGTH_COLUMN"])
-		ranges.append(worksheet_name + "!" + config_sheet["LANGUAGE_COLUMN"] + first_line + ":" + config_sheet["LANGUAGE_COLUMN"])
 		ranges.append(worksheet_name + "!" + config_sheet["MISC_COLUMN"] + first_line + ":" + config_sheet["MISC_COLUMN"])
-		ranges.append(worksheet_name + "!" + config_sheet["AFFILIATE_LINK_COLUMN"] + first_line + ":" + config_sheet["AFFILIATE_LINK_COLUMN"])
 			
 		values = self.sheets_client.get_values(ranges)
 		
@@ -363,23 +353,20 @@ class MainFrame(tkinter.Frame):
 								model["games"][game_name] = {
 									"status": "",
 									"tested_version": "",
+									"affiliate_link": "",
+									"release_date": "",
 									"genre": "",
 									"developer": "",
 									"publisher": "",
-									"twitter": "",
 									"country": "",
-									"year": "",
-									"switch": "",
-									"ps4": "",
-									"ps5": "",
-									"xbox_one": "",
-									"xbox_series": "",
+									"nintendo": "",
+									"playstation": "",
+									"xbox": "",
 									"pc": "",
 									"price": "",
+									"fr_language": "",
 									"length": "",
-									"language": "",
 									"misc": "",
-									"affiliate_link": "",
 								}
 								row_id_to_game[row_id] = game_name
 								
@@ -395,40 +382,34 @@ class MainFrame(tkinter.Frame):
 						self.set_sheet_data_simple_values_to_model(d, start_row, row_id_to_game, model, "status")
 					elif column_id == self.utils.sheet_a1_value_to_column_number(config_sheet["TESTED_VERSION_COLUMN"]):
 						self.set_sheet_data_simple_values_to_model(d, start_row, row_id_to_game, model, "tested_version")
+					elif column_id == self.utils.sheet_a1_value_to_column_number(config_sheet["AFFILIATE_LINK_COLUMN"]):
+						self.set_sheet_data_simple_values_to_model(d, start_row, row_id_to_game, model, "affiliate_link")
+					elif column_id == self.utils.sheet_a1_value_to_column_number(config_sheet["RELEASE_DATE_COLUMN"]):
+						self.set_sheet_data_simple_values_to_model(d, start_row, row_id_to_game, model, "release_date")
 					elif column_id == self.utils.sheet_a1_value_to_column_number(config_sheet["GENRE_COLUMN"]):
 						self.set_sheet_data_simple_values_to_model(d, start_row, row_id_to_game, model, "genre")
 					elif column_id == self.utils.sheet_a1_value_to_column_number(config_sheet["DEVELOPER_COLUMN"]):
 						self.set_sheet_data_simple_values_to_model(d, start_row, row_id_to_game, model, "developer")
 					elif column_id == self.utils.sheet_a1_value_to_column_number(config_sheet["PUBLISHER_COLUMN"]):
 						self.set_sheet_data_simple_values_to_model(d, start_row, row_id_to_game, model, "publisher")
-					elif column_id == self.utils.sheet_a1_value_to_column_number(config_sheet["TWITTER_COLUMN"]):
-						self.set_sheet_data_simple_values_to_model(d, start_row, row_id_to_game, model, "twitter")
 					elif column_id == self.utils.sheet_a1_value_to_column_number(config_sheet["COUNTRY_COLUMN"]):
 						self.set_sheet_data_simple_values_to_model(d, start_row, row_id_to_game, model, "country")
-					elif column_id == self.utils.sheet_a1_value_to_column_number(config_sheet["YEAR_COLUMN"]):
-						self.set_sheet_data_simple_values_to_model(d, start_row, row_id_to_game, model, "year")
-					elif column_id == self.utils.sheet_a1_value_to_column_number(config_sheet["SWITCH_COLUMN"]):
-						self.set_sheet_data_simple_values_to_model(d, start_row, row_id_to_game, model, "switch")
-					elif column_id == self.utils.sheet_a1_value_to_column_number(config_sheet["PS4_COLUMN"]):
-						self.set_sheet_data_simple_values_to_model(d, start_row, row_id_to_game, model, "ps4")
-					elif column_id == self.utils.sheet_a1_value_to_column_number(config_sheet["PS5_COLUMN"]):
-						self.set_sheet_data_simple_values_to_model(d, start_row, row_id_to_game, model, "ps5")
-					elif column_id == self.utils.sheet_a1_value_to_column_number(config_sheet["XBOX_ONE_COLUMN"]):
-						self.set_sheet_data_simple_values_to_model(d, start_row, row_id_to_game, model, "xbox_one")
-					elif column_id == self.utils.sheet_a1_value_to_column_number(config_sheet["XBOX_SERIES_COLUMN"]):
-						self.set_sheet_data_simple_values_to_model(d, start_row, row_id_to_game, model, "xbox_series")
+					elif column_id == self.utils.sheet_a1_value_to_column_number(config_sheet["NINTENDO_COLUMN"]):
+						self.set_sheet_data_simple_values_to_model(d, start_row, row_id_to_game, model, "nintendo")
+					elif column_id == self.utils.sheet_a1_value_to_column_number(config_sheet["PLAYSTATION_COLUMN"]):
+						self.set_sheet_data_simple_values_to_model(d, start_row, row_id_to_game, model, "playstation")
+					elif column_id == self.utils.sheet_a1_value_to_column_number(config_sheet["XBOX_COLUMN"]):
+						self.set_sheet_data_simple_values_to_model(d, start_row, row_id_to_game, model, "xbox")
 					elif column_id == self.utils.sheet_a1_value_to_column_number(config_sheet["PC_COLUMN"]):
 						self.set_sheet_data_simple_values_to_model(d, start_row, row_id_to_game, model, "pc")
 					elif column_id == self.utils.sheet_a1_value_to_column_number(config_sheet["PRICE_COLUMN"]):
 						self.set_sheet_data_simple_values_to_model(d, start_row, row_id_to_game, model, "price")
+					elif column_id == self.utils.sheet_a1_value_to_column_number(config_sheet["FR_LANGUAGE_COLUMN"]):
+						self.set_sheet_data_simple_values_to_model(d, start_row, row_id_to_game, model, "fr_language")
 					elif column_id == self.utils.sheet_a1_value_to_column_number(config_sheet["LENGTH_COLUMN"]):
 						self.set_sheet_data_simple_values_to_model(d, start_row, row_id_to_game, model, "length")
-					elif column_id == self.utils.sheet_a1_value_to_column_number(config_sheet["LANGUAGE_COLUMN"]):
-						self.set_sheet_data_simple_values_to_model(d, start_row, row_id_to_game, model, "language")
 					elif column_id == self.utils.sheet_a1_value_to_column_number(config_sheet["MISC_COLUMN"]):
 						self.set_sheet_data_simple_values_to_model(d, start_row, row_id_to_game, model, "misc")
-					elif column_id == self.utils.sheet_a1_value_to_column_number(config_sheet["AFFILIATE_LINK_COLUMN"]):
-						self.set_sheet_data_simple_values_to_model(d, start_row, row_id_to_game, model, "affiliate_link")
 						
 		return model
 		
@@ -484,6 +465,11 @@ class MainFrame(tkinter.Frame):
 			if "tested_version_text_file" in config["CONTEXT"]:
 				self.set_entry_text(self.entry_tested_version_text_file, config["CONTEXT"]["tested_version_text_file"].replace("<SPACE>", " "))
 				
+			if "release_date_suffix" in config["CONTEXT"]:
+				self.set_entry_text(self.entry_release_date_suffix, config["CONTEXT"]["release_date_suffix"].replace("<SPACE>", " "))
+			if "release_date_text_file" in config["CONTEXT"]:
+				self.set_entry_text(self.entry_release_date_text_file, config["CONTEXT"]["release_date_text_file"].replace("<SPACE>", " "))
+				
 			if "genre_suffix" in config["CONTEXT"]:
 				self.set_entry_text(self.entry_genre_suffix, config["CONTEXT"]["genre_suffix"].replace("<SPACE>", " "))
 			if "genre_text_file" in config["CONTEXT"]:
@@ -499,20 +485,10 @@ class MainFrame(tkinter.Frame):
 			if "publisher_text_file" in config["CONTEXT"]:
 				self.set_entry_text(self.entry_publisher_text_file, config["CONTEXT"]["publisher_text_file"].replace("<SPACE>", " "))
 				
-			if "twitter_suffix" in config["CONTEXT"]:
-				self.set_entry_text(self.entry_twitter_suffix, config["CONTEXT"]["twitter_suffix"].replace("<SPACE>", " "))
-			if "twitter_text_file" in config["CONTEXT"]:
-				self.set_entry_text(self.entry_twitter_text_file, config["CONTEXT"]["twitter_text_file"].replace("<SPACE>", " "))
-				
 			if "country_suffix" in config["CONTEXT"]:
 				self.set_entry_text(self.entry_country_suffix, config["CONTEXT"]["country_suffix"].replace("<SPACE>", " "))
 			if "country_text_file" in config["CONTEXT"]:
 				self.set_entry_text(self.entry_country_text_file, config["CONTEXT"]["country_text_file"].replace("<SPACE>", " "))
-				
-			if "year_suffix" in config["CONTEXT"]:
-				self.set_entry_text(self.entry_year_suffix, config["CONTEXT"]["year_suffix"].replace("<SPACE>", " "))
-			if "year_text_file" in config["CONTEXT"]:
-				self.set_entry_text(self.entry_year_text_file, config["CONTEXT"]["year_text_file"].replace("<SPACE>", " "))
 				
 			if "platforms_suffix" in config["CONTEXT"]:
 				self.set_entry_text(self.entry_platforms_suffix, config["CONTEXT"]["platforms_suffix"].replace("<SPACE>", " "))
@@ -524,15 +500,15 @@ class MainFrame(tkinter.Frame):
 			if "price_text_file" in config["CONTEXT"]:
 				self.set_entry_text(self.entry_price_text_file, config["CONTEXT"]["price_text_file"].replace("<SPACE>", " "))
 				
+			if "fr_language_suffix" in config["CONTEXT"]:
+				self.set_entry_text(self.entry_fr_language_suffix, config["CONTEXT"]["fr_language_suffix"].replace("<SPACE>", " "))
+			if "fr_language_text_file" in config["CONTEXT"]:
+				self.set_entry_text(self.entry_fr_language_text_file, config["CONTEXT"]["fr_language_text_file"].replace("<SPACE>", " "))
+				
 			if "length_suffix" in config["CONTEXT"]:
 				self.set_entry_text(self.entry_length_suffix, config["CONTEXT"]["length_suffix"].replace("<SPACE>", " "))
 			if "length_text_file" in config["CONTEXT"]:
 				self.set_entry_text(self.entry_length_text_file, config["CONTEXT"]["length_text_file"].replace("<SPACE>", " "))
-				
-			if "language_suffix" in config["CONTEXT"]:
-				self.set_entry_text(self.entry_language_suffix, config["CONTEXT"]["language_suffix"].replace("<SPACE>", " "))
-			if "language_text_file" in config["CONTEXT"]:
-				self.set_entry_text(self.entry_language_text_file, config["CONTEXT"]["language_text_file"].replace("<SPACE>", " "))
 				
 			if "misc_suffix" in config["CONTEXT"]:
 				self.set_entry_text(self.entry_misc_suffix, config["CONTEXT"]["misc_suffix"].replace("<SPACE>", " "))
@@ -561,26 +537,24 @@ class MainFrame(tkinter.Frame):
 			"status_text_file": self.entry_status_text_file.get().replace(" ", "<SPACE>"),
 			"tested_version_suffix": self.entry_tested_version_suffix.get().replace(" ", "<SPACE>"),
 			"tested_version_text_file": self.entry_tested_version_text_file.get().replace(" ", "<SPACE>"),
+			"release_date_suffix": self.entry_release_date_suffix.get().replace(" ", "<SPACE>"),
+			"release_date_text_file": self.entry_release_date_text_file.get().replace(" ", "<SPACE>"),
 			"genre_suffix": self.entry_genre_suffix.get().replace(" ", "<SPACE>"),
 			"genre_text_file": self.entry_genre_text_file.get().replace(" ", "<SPACE>"),
 			"developer_suffix": self.entry_developer_suffix.get().replace(" ", "<SPACE>"),
 			"developer_text_file": self.entry_developer_text_file.get().replace(" ", "<SPACE>"),
 			"publisher_suffix": self.entry_publisher_suffix.get().replace(" ", "<SPACE>"),
 			"publisher_text_file": self.entry_publisher_text_file.get().replace(" ", "<SPACE>"),
-			"twitter_suffix": self.entry_twitter_suffix.get().replace(" ", "<SPACE>"),
-			"twitter_text_file": self.entry_twitter_text_file.get().replace(" ", "<SPACE>"),
 			"country_suffix": self.entry_country_suffix.get().replace(" ", "<SPACE>"),
 			"country_text_file": self.entry_country_text_file.get().replace(" ", "<SPACE>"),
-			"year_suffix": self.entry_year_suffix.get().replace(" ", "<SPACE>"),
-			"year_text_file": self.entry_year_text_file.get().replace(" ", "<SPACE>"),
 			"platforms_suffix": self.entry_platforms_suffix.get().replace(" ", "<SPACE>"),
 			"platforms_text_file": self.entry_platforms_text_file.get().replace(" ", "<SPACE>"),
 			"price_suffix": self.entry_price_suffix.get().replace(" ", "<SPACE>"),
 			"price_text_file": self.entry_price_text_file.get().replace(" ", "<SPACE>"),
+			"fr_language_suffix": self.entry_fr_language_suffix.get().replace(" ", "<SPACE>"),
+			"fr_language_text_file": self.entry_fr_language_text_file.get().replace(" ", "<SPACE>"),
 			"length_suffix": self.entry_length_suffix.get().replace(" ", "<SPACE>"),
 			"length_text_file": self.entry_length_text_file.get().replace(" ", "<SPACE>"),
-			"language_suffix": self.entry_language_suffix.get().replace(" ", "<SPACE>"),
-			"language_text_file": self.entry_language_text_file.get().replace(" ", "<SPACE>"),
 			"misc_suffix": self.entry_misc_suffix.get().replace(" ", "<SPACE>"),
 			"misc_text_file": self.entry_misc_text_file.get().replace(" ", "<SPACE>"),
 			"affiliate_link_suffix": self.entry_affiliate_link_suffix.get().replace(" ", "<SPACE>"),
